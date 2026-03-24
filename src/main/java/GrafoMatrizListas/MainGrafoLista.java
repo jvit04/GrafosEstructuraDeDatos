@@ -33,8 +33,14 @@ public class MainGrafoLista {
         System.out.println("--- Estructura del Grafo ---");
         G.imprimirGrafo();
 
+        System.out.println("\n--- Recorrido en Anchura (DFS) desde D ---");
+        System.out.println(G.recorridoEnAnchura(vD));
+
+        G.reiniciarVisitados();
+
         // Según tu imagen, el recorrido empieza en D
         System.out.println("\n--- Recorrido en Profundidad (DFS) desde D ---");
         System.out.println("Resultado: " + G.recorridoProfundo(vD));
+
     }
 }
