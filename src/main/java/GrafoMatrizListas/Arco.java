@@ -15,6 +15,13 @@ public class Arco<E,V> {
         this.fpeso = fpeso;
     }
 
+    public Arco(Arco<E,V> arco){
+        this.data = arco.data;
+        this.origen =arco.origen;
+        this.destino = arco.destino;
+        this.fpeso = arco.fpeso;
+    }
+
     public E getData() {
         return data;
     }

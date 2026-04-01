@@ -14,6 +14,12 @@ public class Vertice<V,E> {
         this.vistado=false;
     }
 
+    public Vertice(V content, LinkedList<Arco<E, V>> listaArcos, boolean vistado) {
+        this.content = content;
+        this.listaArcos = listaArcos;
+        this.vistado = vistado;
+    }
+
     public boolean isVistado() {
         return vistado;
     }
