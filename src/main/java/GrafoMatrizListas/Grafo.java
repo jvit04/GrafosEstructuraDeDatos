@@ -158,8 +158,10 @@ public class Grafo <V,E> {
         return null; // Si no lo encuentra
     }
 
-    //Se queda aqui, pero no funciona correctamente, por problemas de dirección de memoria
-    public Grafo<V, E> primJose(Vertice<V, E> verticeOrigen) {
+    //todo : prim mal hecho jeje
+//Tiene problemas de dirección de memoria, no funciona porque omiti el primer paso
+    //donde debo copiar todos los vertices del grafo
+    public Grafo<V, E> prim(Vertice<V, E> verticeOrigen) {
         //Creo el grafo que voy a devolver
         Grafo<V, E> grafoPrim = new Grafo<>(this.esDirigido);
         //marco el vertice origen como visitado
@@ -191,7 +193,7 @@ public class Grafo <V,E> {
                 destino.setVistado(true);
                 //agrego el vertice al grafo que retorno
                 grafoPrim.addVertice(destino);
-                //agrego el argo si es dirigido
+                //agrego el arco
                 grafoPrim.addArco(menor.data, menor.origen, menor.destino, menor.fpeso);
                 //recorro la lista de arcos del vertice destino.
                 for (Arco<E, V> arco : destino.getListaArcos()) {
@@ -206,8 +208,8 @@ public class Grafo <V,E> {
         return grafoPrim;
     }
 
-
-    public Grafo<V, E> prim(Vertice<V, E> verticeOrigen) {
+//todo : Prim IA
+    public Grafo<V, E> primIA(Vertice<V, E> verticeOrigen) {
         // 1. Creamos el grafo nuevo
         Grafo<V, E> grafoPrim = new Grafo<>(this.esDirigido);
 
@@ -254,8 +256,6 @@ public class Grafo <V,E> {
                 // Conectamos los clones en el nuevo grafo
                 grafoPrim.addArco(menor.data, origenClon, destinoClon, menor.fpeso);
 
-                grafoPrim.addArco(menor.data, destinoClon, origenClon, menor.fpeso);
-
                 // --------------------------
 
                 // Buscamos nuevos caminos desde el recién conquistado
@@ -296,6 +296,64 @@ public class Grafo <V,E> {
         }
 
         return sb.toString();
+    }
+
+
+
+    //todo:siguiente reto Kruskal
+    //Kruskal no lleva parámetros ¿por qué?
+    //debido a que este utiliza los arcos no los vertices
+    public Grafo<V,E> kruskal(){
+        //Primero se añaden todos los vertices al arbol de expansión
+        Grafo<V,E> grafoKruskal = new Grafo<>(this.esDirigido);
+        //Se necesitara arco de menor peso, por lo que uso un Heap
+        ComparadorArco<E,V> cmpArco=new ComparadorArco<>();
+        Heap<Arco<E, V>> cola = new Heap<>(true,cmpArco);
+        //Kruskal añade todos los arcos sin excepción al Heap
+        //como tengo que si o si usar un for para hacer la copia del grafo
+        //aprovecho y agrego otro para guardar todos los vertices
+        for(Vertice<V,E> vertice:this.LVertices){
+            grafoKruskal.addVertice(new Vertice<>(vertice.getContent()));
+            for(Arco<E,V> arco:vertice.getListaArcos()){
+                if(!cola.datos.contains(arco)){
+                    cola.encolar(arco);
+                }
+            }
+        }
+        //Explicación: el algoritmo dice que el proceso de hacer puentes
+        //se repite n-1 veces. ¿Porque tiene sentido?
+        // Si quiero unir 4 islas necesito 3 puentes para hacerlo
+        // 🏝️➡️🏝️
+         //⬆️
+         //🏝️⬅️🏝️
+        int numeroVertices = grafoKruskal.LVertices.size();
+        int puentes = 0;
+
+        while(puentes != numeroVertices-1){
+            if(cola.datos.isEmpty()) break;
+            //se elige el arco de menor peso
+            Arco<E,V> menor = cola.desencolar();
+
+            Vertice<V, E> origenClon = grafoKruskal.buscarVertice(menor.origen.getContent());
+            Vertice<V, E> destinoClon = grafoKruskal.buscarVertice(menor.destino.getContent());
+            //que no haya sido elegido y no una dos vertices de una misma componente
+            if(!grafoKruskal.existeCamino(origenClon, destinoClon)){
+                grafoKruskal.addArco(menor.getData(), origenClon, destinoClon, menor.getFpeso());
+                puentes++;
+            }
+        }
+        return grafoKruskal;
+    }
+
+    public boolean existeCamino(Vertice<V,E> origen, Vertice<V,E> destino){
+        this.reiniciarVisitados();
+        LinkedList<Vertice<V,E>> recorridoAnchura = this.recorridoEnAnchura(origen);
+        for(Vertice<V,E> vertice:recorridoAnchura){
+            if(vertice.getContent().equals(destino.getContent())){
+                return true;
+            }
+        }
+        return false;
     }
 }
 

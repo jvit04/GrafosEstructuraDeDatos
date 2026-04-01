@@ -28,7 +28,7 @@ public class MainGrafoLista {
 
         // Imprimir estructura original usando tu toString() o imprimirGrafo()
         System.out.println("--- Estructura del Grafo Original ---");
-        System.out.println(G.toString()); // o G.imprimirGrafo();
+        System.out.println(G); // o G.imprimirGrafo();
 
         System.out.println("\n--- Recorrido en Anchura desde A ---");
         System.out.println(G.recorridoEnAnchura(vA));
@@ -42,10 +42,17 @@ public class MainGrafoLista {
         // 3. CRÍTICO: Reiniciar los visitados antes de llamar a Prim
         G.reiniciarVisitados();
 
-        System.out.println("\n--- Árbol de Expansión Mínima (PRIM) desde A ---");
-        Grafo<String, Integer> arbolMinimo = G.prim(vA);
+        System.out.println("\n--- Árbol de Expansión Mínima (PRIM) desde A---");
+        Grafo<String, Integer> arbolMinimo = G.primIA(vA);
 
         // Imprimimos el grafo resultante usando el toString que creamos
         System.out.println(arbolMinimo.toString());
+
+        System.out.println("\n--- Árbol de Expansión Kruskal---");
+        Grafo<String,Integer> grafoKruskal = G.kruskal();
+
+        System.out.println(grafoKruskal.toString());
+
+
     }
 }
