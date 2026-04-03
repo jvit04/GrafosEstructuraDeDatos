@@ -1,5 +1,7 @@
 package GrafoMatrizListas;
 
+import java.util.HashMap;
+
 public class MainGrafoLista {
     public static void main(String[] args) {
         // 1. IMPORTANTE: Prim trabaja sobre grafos NO dirigidos (false)
@@ -53,6 +55,13 @@ public class MainGrafoLista {
 
         System.out.println(grafoKruskal.toString());
 
+        System.out.println("\n--- Caminos más cortos desde A (DIJKSTRA) ---");
+// Llamamos al método y guardamos el mapa resultante
+        HashMap<String, Integer> distancias = G.dijkstra(vA);
 
+// Imprimimos el mapa para ver los resultados
+        for (String destino : distancias.keySet()) {
+            System.out.println("Distancia mínima hacia " + destino + ": " + distancias.get(destino));
+        }
     }
 }

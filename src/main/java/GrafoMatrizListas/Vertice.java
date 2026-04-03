@@ -1,17 +1,30 @@
 package GrafoMatrizListas;
 
 import java.util.LinkedList;
-import java.util.List;
+
 
 public class Vertice<V,E> {
     private V content;
     private LinkedList<Arco<E,V>> listaArcos;
     private boolean vistado;
 
+    //atributos útiles para dikstra
+    int cumulativeDistance;
+    Vertice<V,E> predecessor;
+
     public Vertice(V content) {
         this.content = content;
         this.listaArcos = new LinkedList<>();
         this.vistado=false;
+        this.cumulativeDistance=Integer.MAX_VALUE;
+        this.predecessor = null;
+    }
+    public Vertice(V content,Vertice<V,E> predecessor) {
+        this.content = content;
+        this.listaArcos = new LinkedList<>();
+        this.vistado=false;
+        this.cumulativeDistance=Integer.MAX_VALUE;
+        this.predecessor = predecessor;
     }
 
     public Vertice(V content, LinkedList<Arco<E, V>> listaArcos, boolean vistado) {
@@ -50,5 +63,3 @@ public class Vertice<V,E> {
     }
 }
 
-
-//devuelvame una lista de un grafo de un vertice que pueda llegar a todos los dem
