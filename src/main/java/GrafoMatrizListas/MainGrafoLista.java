@@ -63,5 +63,7 @@ public class MainGrafoLista {
         for (String destino : distancias.keySet()) {
             System.out.println("Distancia mínima hacia " + destino + ": " + distancias.get(destino));
         }
+        System.out.println("\nGRAFO MATRIZ");
+        System.out.println(G.aGrafoMatriz());
     }
 }

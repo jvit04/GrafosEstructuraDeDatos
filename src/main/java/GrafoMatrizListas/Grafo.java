@@ -28,12 +28,12 @@ public class Grafo <V,E> {
     }
 
     //agregar arco
-    public void addArco(Arco<E,V> arcoO) {
+    public void addArco(Arco<E, V> arcoO) {
         Arco<E, V> arco = new Arco<>(arcoO.data, arcoO.getOrigen(), arcoO.getDestino(), arcoO.fpeso);
 
         arcoO.getOrigen().getListaArcos().add(arco);
         if (!this.esDirigido) {
-            arco = new Arco<>(arcoO.data,arcoO.getDestino(), arcoO.getOrigen(),  arcoO.fpeso);
+            arco = new Arco<>(arcoO.data, arcoO.getDestino(), arcoO.getOrigen(), arcoO.fpeso);
             arcoO.getDestino().getListaArcos().add(arco);
         }
     }
@@ -148,6 +148,7 @@ public class Grafo <V,E> {
         }
         return componentes.size() == 1;
     }
+
     public Vertice<V, E> buscarVertice(V data) {
         for (Vertice<V, E> v : this.LVertices) {
             // Usamos .equals() porque 'data' es un objeto genérico (como un String)
@@ -208,7 +209,7 @@ public class Grafo <V,E> {
         return grafoPrim;
     }
 
-//todo : Prim IA
+    //todo : Prim IA
     public Grafo<V, E> primIA(Vertice<V, E> verticeOrigen) {
         // 1. Creamos el grafo nuevo
         Grafo<V, E> grafoPrim = new Grafo<>(this.esDirigido);
@@ -299,23 +300,22 @@ public class Grafo <V,E> {
     }
 
 
-
     //todo:siguiente reto Kruskal
     //Kruskal no lleva parámetros ¿por qué?
     //debido a que este utiliza los arcos no los vertices
-    public Grafo<V,E> kruskal(){
+    public Grafo<V, E> kruskal() {
         //Primero se añaden todos los vertices al arbol de expansión
-        Grafo<V,E> grafoKruskal = new Grafo<>(this.esDirigido);
+        Grafo<V, E> grafoKruskal = new Grafo<>(this.esDirigido);
         //Se necesitará arco de menor peso, por lo que uso un Heap
-        ComparadorArco<E,V> cmpArco=new ComparadorArco<>();
-        Heap<Arco<E, V>> cola = new Heap<>(true,cmpArco);
+        ComparadorArco<E, V> cmpArco = new ComparadorArco<>();
+        Heap<Arco<E, V>> cola = new Heap<>(true, cmpArco);
         //Kruskal añade todos los arcos sin excepción al Heap
         //como tengo que si o si usar un for para hacer la copia del grafo
         //aprovecho y agrego otro para guardar todos los arcos de los vertices
-        for(Vertice<V,E> vertice:this.LVertices){
+        for (Vertice<V, E> vertice : this.LVertices) {
             grafoKruskal.addVertice(new Vertice<>(vertice.getContent()));
-            for(Arco<E,V> arco:vertice.getListaArcos()){
-                if(!cola.datos.contains(arco)){
+            for (Arco<E, V> arco : vertice.getListaArcos()) {
+                if (!cola.datos.contains(arco)) {
                     cola.encolar(arco);
                 }
             }
@@ -324,21 +324,21 @@ public class Grafo <V,E> {
         //¿Por qué tiene sentido?
         // Si quiero unir 4 islas necesito 3 puentes para hacerlo
         // 🏝️➡️🏝️
-         //⬆️
-         //🏝️⬅️🏝️
+        //⬆️
+        //🏝️⬅️🏝️
         int numeroVertices = grafoKruskal.LVertices.size();
         int puentes = 0;
 
         //Proceso iterativo
-        while(puentes != numeroVertices-1){
-            if(cola.datos.isEmpty()) break;
+        while (puentes != numeroVertices - 1) {
+            if (cola.datos.isEmpty()) break;
             //se elige el arco de menor peso
-            Arco<E,V> menor = cola.desencolar();
+            Arco<E, V> menor = cola.desencolar();
             //Me toco aprender que es necesario hacer clones de vertices, para evitar los problemas de memoria ocurridos en prim
             Vertice<V, E> origenClon = grafoKruskal.buscarVertice(menor.origen.getContent());
             Vertice<V, E> destinoClon = grafoKruskal.buscarVertice(menor.destino.getContent());
             //que no haya sido elegido y no una dos vertices de una misma componente
-            if(!grafoKruskal.existeCamino(origenClon, destinoClon)){
+            if (!grafoKruskal.existeCamino(origenClon, destinoClon)) {
                 grafoKruskal.addArco(menor.getData(), origenClon, destinoClon, menor.getFpeso());
                 puentes++;
             }
@@ -348,92 +348,121 @@ public class Grafo <V,E> {
 
     //este metodo sirve para kruskal para evitarme hacer un grafo cerrado
     //tengo que saber si existe camino entre un vertice de origen y otro de destino
-    public boolean existeCamino(Vertice<V,E> origen, Vertice<V,E> destino){
+    public boolean existeCamino(Vertice<V, E> origen, Vertice<V, E> destino) {
         //seguridad: reinicio visitados
         this.reiniciarVisitados();
         //hago un recorrido por anchura
-        LinkedList<Vertice<V,E>> recorridoAnchura = this.recorridoEnAnchura(origen);
+        LinkedList<Vertice<V, E>> recorridoAnchura = this.recorridoEnAnchura(origen);
         //como devuelve una lista
-        for(Vertice<V,E> vertice:recorridoAnchura){
-            if(vertice.getContent().equals(destino.getContent())){
+        for (Vertice<V, E> vertice : recorridoAnchura) {
+            if (vertice.getContent().equals(destino.getContent())) {
                 return true;
             }
         }
         return false;
     }
-//todo Algoritmo de dikstra: me permite encontrar el camino más corto hacia todos los nodos del grafo.
+
+    //todo Algoritmo de dijkstra: me permite encontrar el camino más corto hacia todos los nodos del grafo.
     //Fue necesario cambiar la estructura de la clase vertice, añadiendo 2 atributos.
-public HashMap<String, Integer> dijkstra(Vertice<V,E> origen){
+    public HashMap<String, Integer> dijkstra(Vertice<V, E> origen) {
 
         //---------------------------------------
-    //Esto no es parte del algoritmo, solo es para limpiar los vertices
-    //vuelve a poner a todos los vertices como no visitados
-    this.reiniciarVisitados();
-    //Aqui limpiamos la distancia acumulada y el predecesor
-    for(Vertice<V,E> v:this.LVertices){
-        v.cumulativeDistance = Integer.MAX_VALUE;
-        v.predecessor = null;
-    }
-    //-----------------------------------------
+        //Esto no es parte del algoritmo, solo es para limpiar los vertices
+        //vuelve a poner a todos los vertices como no visitados
+        this.reiniciarVisitados();
+        //Aqui limpiamos la distancia acumulada y el predecesor
+        for (Vertice<V, E> v : this.LVertices) {
+            v.cumulativeDistance = Integer.MAX_VALUE;
+            v.predecessor = null;
+        }
+        //-----------------------------------------
 
         //clase comparador de vertices, usará la distancia acumulativa que es int
-    ComparadorVertice<V,E> comparadorVertice = new ComparadorVertice<>();
-    //Heap para los vertices, ordenados por los menores
-    Heap<Vertice<V,E>> colaVertices = new Heap<>(true, comparadorVertice);
-    HashMap<String ,Integer> map = new HashMap<>();
-    //Preparar el terreno, actualmente los vertices tienen la distancia infinita
-    //El vertice de orige será el primero en cambiar su distancia acumulada
-    //ya que es el punto de partida, por lo tanto, es 0.
-    origen.cumulativeDistance=0;
+        ComparadorVertice<V, E> comparadorVertice = new ComparadorVertice<>();
+        //Heap para los vertices, ordenados por los menores
+        Heap<Vertice<V, E>> colaVertices = new Heap<>(true, comparadorVertice);
+        HashMap<String, Integer> map = new HashMap<>();
+        //Preparar el terreno, actualmente los vertices tienen la distancia infinita
+        //El vertice de orige será el primero en cambiar su distancia acumulada
+        //ya que es el punto de partida, por lo tanto, es 0.
+        origen.cumulativeDistance = 0;
 
-    //encolamos el nodo de partida
-    colaVertices.encolar(origen);
+        //encolamos el nodo de partida
+        colaVertices.encolar(origen);
 
-    //inicia el proceso iterativo
-    while (!colaVertices.datos.isEmpty()){
-        //desencolamos el vertie que esté menos lejos
-        Vertice<V,E> vertice = colaVertices.desencolar();
-        //se lo marca como visitado
-        vertice.setVistado(true);
+        //inicia el proceso iterativo
+        while (!colaVertices.datos.isEmpty()) {
+            //desencolamos el vertie que esté menos lejos
+            Vertice<V, E> vertice = colaVertices.desencolar();
+            //se lo marca como visitado
+            vertice.setVistado(true);
 
-        map.put((String) vertice.getContent(), vertice.cumulativeDistance);
-        //Paso 3
-        //recorremos sus vertices adyacentes que no han sido visitados
-        //Para hacer eso tengo que hacerlo desde los arcos.
-        for (Arco<E,V> arco:vertice.getListaArcos()){
-            //Guardo la variable de destino del arco
-            Vertice<V,E> vDestino = arco.destino;
-            //Pregunto si no ha sido visitado
-            if(!vDestino.isVistado()){
-                //Importante: esta parte no lo explica la diapositiva bien.
+            map.put((String) vertice.getContent(), vertice.cumulativeDistance);
+            //Paso 3
+            //recorremos sus vertices adyacentes que no han sido visitados
+            //Para hacer eso tengo que hacerlo desde los arcos.
+            for (Arco<E, V> arco : vertice.getListaArcos()) {
+                //Guardo la variable de destino del arco
+                Vertice<V, E> vDestino = arco.destino;
+                //Pregunto si no ha sido visitado
+                if (!vDestino.isVistado()) {
+                    //Importante: esta parte no lo explica la diapositiva bien.
 
-                //Necesito calcular una nueva distancia.
-                //Actualmente, todos los vertices menos origen tienen una distancia infinita
-                //entonces, debo calcular si esta nueva distancia es menor que la distancia acumulada de los vertices
+                    //Necesito calcular una nueva distancia.
+                    //Actualmente, todos los vertices menos origen tienen una distancia infinita
+                    //entonces, debo calcular si esta nueva distancia es menor que la distancia acumulada de los vertices
 
-                //La calculo de la siguiente manera, la distancia acumulada del vertice
-                //en la primera iteración es Origen, por lo tanto, es 0, sumado a el fpeso que es entero también
-                //Ejemplo con el vertice Origen: nuevaDistancia = 0+2 = 2
-                int nuevaDistancia = vertice.cumulativeDistance + arco.fpeso;
+                    //La calculo de la siguiente manera, la distancia acumulada del vertice
+                    //en la primera iteración es Origen, por lo tanto, es 0, sumado a el fpeso que es entero también
+                    //Ejemplo con el vertice Origen: nuevaDistancia = 0+2 = 2
+                    int nuevaDistancia = vertice.cumulativeDistance + arco.fpeso;
 
-                //Ahora para asegurarme que encuentro una mejor ruta debo preguntar
-                //Si la nueva distancia es menor que la distancia acumulada.
-                //Siguiente el ejemplo anterior: if(2<∞)
-                if(nuevaDistancia<vDestino.cumulativeDistance){
-                    //si se cumple entonces, le asigno esta nueva distancia al vDestino
-                    vDestino.cumulativeDistance = nuevaDistancia;
-                    //le asigno su predecessor el vertice desencolado
-                    vDestino.predecessor = vertice;
-                    //encolo el vertice destino
-                    colaVertices.encolar(vDestino);
+                    //Ahora para asegurarme que encuentro una mejor ruta debo preguntar
+                    //Si la nueva distancia es menor que la distancia acumulada.
+                    //Siguiente el ejemplo anterior: if(2<∞)
+                    if (nuevaDistancia < vDestino.cumulativeDistance) {
+                        //si se cumple entonces, le asigno esta nueva distancia al vDestino
+                        vDestino.cumulativeDistance = nuevaDistancia;
+                        //le asigno su predecessor el vertice desencolado
+                        vDestino.predecessor = vertice;
+                        //encolo el vertice destino
+                        colaVertices.encolar(vDestino);
+                    }
                 }
             }
+            //El while se repite hasta que no haya nada en cola.
         }
-        //El while se repite hasta que no haya nada en cola.
+        return map;
     }
-    return map;
-}
 
+    //Ejercicio tipo examen: matriz de adyacencia de un grafo lista
+    public GraphMatrix<V, E> aGrafoMatriz() {
+        GraphMatrix<V, E> grafoMatriz = new GraphMatrix<>(this.LVertices.size());
+        grafoMatriz.setNnodes(this.LVertices.size());
+        //llenar V Nodes[]
+        int i = 0;
+        for (Vertice<V, E> vertice : this.LVertices) {
+            grafoMatriz.getNodes()[i] = vertice.getContent();
+            i++;
+        }
+        i = 0;
+        for (Vertice<V, E> vertice : this.LVertices) {
+            for (Arco<E, V> arco : vertice.getListaArcos()) {
+                //índice destino, uso una función search para conseguirlo
+                int iDestino = grafoMatriz.search(arco.destino);
+              //devuelve -1 si no encuentra el vertices, entonces pongo una condición de seguridad
+                if (iDestino!=-1){
+                    //llenar pesos Adyacencia[][]
+                    grafoMatriz.getPesosAdyacencia()[i][iDestino] = arco.fpeso;
+                    //llenar contenido de Adyacencia[][]
+                    grafoMatriz.getContAdyacencia()[i][iDestino] = arco.data;
+                }
+
+            }
+            i++;
+        }
+        return grafoMatriz;
+    }
 }
 
 
