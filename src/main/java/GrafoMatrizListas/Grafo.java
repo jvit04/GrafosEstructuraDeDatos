@@ -463,6 +463,25 @@ public class Grafo <V,E> {
         }
         return grafoMatriz;
     }
+    public Grafo<V,E> grafoEspejo(){
+        //sino es dirigido, regreso el mismo grafo, ya que daría igual el espejo
+        if(!this.esDirigido)return this;
+        Grafo<V,E> grafoEspejo = new Grafo<>(true);
+
+        for(Vertice<V,E> v:this.LVertices){
+            grafoEspejo.addVertice(new Vertice<>(v.getContent()));
+        }
+
+        for (Vertice<V,E> vOriginal : this.LVertices) {
+            for (Arco<E,V> arco : vOriginal.getListaArcos()) {
+                Vertice<V,E> origenClon= grafoEspejo.buscarVertice(arco.origen.getContent());
+                Vertice<V,E> destinoClon= grafoEspejo.buscarVertice(arco.destino.getContent());
+                grafoEspejo.addArco(arco.data,destinoClon,origenClon,arco.fpeso);
+            }
+        }
+        return grafoEspejo;
+    }
+
 }
 
 

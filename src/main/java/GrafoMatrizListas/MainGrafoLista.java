@@ -45,7 +45,7 @@ public class MainGrafoLista {
         G.reiniciarVisitados();
 
         System.out.println("\n--- Árbol de Expansión Mínima (PRIM) desde A---");
-        Grafo<String, Integer> arbolMinimo = G.primIA(vA);
+        Grafo<String, Integer> arbolMinimo = G.prim(vA); // Asegurate que se llame prim y no primIA según tu código
 
         // Imprimimos el grafo resultante usando el toString que creamos
         System.out.println(arbolMinimo.toString());
@@ -56,14 +56,45 @@ public class MainGrafoLista {
         System.out.println(grafoKruskal.toString());
 
         System.out.println("\n--- Caminos más cortos desde A (DIJKSTRA) ---");
-// Llamamos al método y guardamos el mapa resultante
+        // Llamamos al método y guardamos el mapa resultante
         HashMap<String, Integer> distancias = G.dijkstra(vA);
 
-// Imprimimos el mapa para ver los resultados
+        // Imprimimos el mapa para ver los resultados
         for (String destino : distancias.keySet()) {
             System.out.println("Distancia mínima hacia " + destino + ": " + distancias.get(destino));
         }
-        System.out.println("\nGRAFO MATRIZ");
+
+        System.out.println("\n--- GRAFO MATRIZ ---");
         System.out.println(G.aGrafoMatriz());
+
+
+        // =========================================================
+        // NUEVA SECCIÓN: PRUEBA DEL GRAFO ESPEJO
+        // =========================================================
+        System.out.println("\n--- PRUEBA DE GRAFO ESPEJO ---");
+
+        // Creamos un grafo DIRIGIDO (true) para que el espejo tenga efecto
+        Grafo<String, Integer> gDirigido = new Grafo<>(true);
+
+        Vertice<String, Integer> vX = new Vertice<>("X");
+        Vertice<String, Integer> vY = new Vertice<>("Y");
+        Vertice<String, Integer> vZ = new Vertice<>("Z");
+
+        gDirigido.addVertice(vX);
+        gDirigido.addVertice(vY);
+        gDirigido.addVertice(vZ);
+
+        // Conexiones originales: X->Y, Y->Z, X->Z
+        gDirigido.addArco(10, vX, vY, 1);
+        gDirigido.addArco(20, vY, vZ, 2);
+        gDirigido.addArco(30, vX, vZ, 3);
+
+        System.out.println("Grafo Dirigido ORIGINAL:");
+        System.out.println(gDirigido);
+
+        Grafo<String, Integer> gEspejo = gDirigido.grafoEspejo();
+
+        System.out.println("Grafo ESPEJO (Debería ser Y->X, Z->Y, Z->X):");
+        System.out.println(gEspejo);
     }
 }
